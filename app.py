@@ -6,14 +6,10 @@ def hello_world():
     return 'Hello, World!'
 
 @app.before_request
-def gather_request_data():
-    g.method = request.method
-    g.url = request.url
+def log_details():
+    method = request.method
+    url = request.url
 
-@app.after_request
-def log_details(response: Response):
-    g.status = response.status
-
-    logger.info(f'method: {g.method}\n url: {g.url}\n status: {g.status}')
-
-    return response
+    @after_this_request
+    def log_details_callback(response: Response):
+        logger.info(f'method: {method}\n url: {url}\n status: {response.status}')
